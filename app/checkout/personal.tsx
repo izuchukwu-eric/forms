@@ -5,18 +5,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonalInfoSchema, PersonalInfo } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
+import { useCheckoutContext } from "../../src/context/checkoutContext";
 
 export default function PersonalDetails() {
-    const { handleSubmit, control, formState: { errors } } = useForm<PersonalInfo>({
+    const { handleSubmit, control } = useForm<PersonalInfo>({
         resolver: zodResolver(PersonalInfoSchema)
     });
+    const { setPersonal } = useCheckoutContext();
+
     const router = useRouter();
     const theme = useTheme();
 
-    console.log(errors);
-
-    const nextPage = (data) => {
-        console.log('Form fields: ', data);
+    const nextPage = (data: PersonalInfo) => {
+        setPersonal(data);
 
         router.push("/checkout/delivery");
     }

@@ -1,25 +1,30 @@
 import { useRouter } from "expo-router";
-import { ScrollView, View } from "react-native"
+import { Alert, ScrollView, View } from "react-native"
 import { Button, Card, useTheme, Checkbox, HelperText } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PaymentInfo, PaymentInfoSchema } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
+import { useCheckoutContext } from "../../src/context/checkoutContext";
 
 
 export default function PaymentDetails() {
-    const { handleSubmit, control, formState: { errors } } = useForm<PaymentInfo>({
+    const { handleSubmit, control } = useForm<PaymentInfo>({
         resolver: zodResolver(PaymentInfoSchema)
     });
+    const { setPayment, onSubmitAll } = useCheckoutContext();
     const router = useRouter();
     const theme = useTheme();
 
-    console.log(errors);
 
-    const nextPage = () => {
-        //submit
+    const nextPage = async (data: PaymentInfo) => {
+        const success = await onSubmitAll(data);
 
-        router.push("/")
+        if(success) {
+            router.push("/")
+        } else {
+            Alert.alert("Failed to submit the form")
+        }
     }
 
     return (

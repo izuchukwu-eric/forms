@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DeliveryInfoSchema, DeliveryInfo } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
+import { useCheckoutContext } from "../../src/context/checkoutContext";
 
 export default function DeliveryDetails() {
     const { handleSubmit, control, formState: { errors } } = useForm<DeliveryInfo>({
@@ -12,15 +13,13 @@ export default function DeliveryDetails() {
         defaultValues: {
             shipping: "free"
         }
-
     });
+    const { setDelivery } = useCheckoutContext()
     const router = useRouter();
     const theme = useTheme();
 
-    console.log(errors);
-
-    const nextPage = (data) => {
-        console.log('Form fields: ', data);
+    const nextPage = (data: DeliveryInfo) => {
+        setDelivery(data);
 
         router.push("/checkout/payment")
     }
