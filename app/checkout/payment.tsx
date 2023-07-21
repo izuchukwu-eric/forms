@@ -1,11 +1,20 @@
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "react-native"
-import { Button, Card, TextInput, useTheme, Checkbox } from "react-native-paper";
+import { Button, Card, useTheme, Checkbox, HelperText } from "react-native-paper";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PaymentInfo, PaymentInfoSchema } from "../../src/schema/checkout.schema";
+import ControlledInput from "../../src/components/ControlledInput";
 
 
 export default function PaymentDetails() {
+    const { handleSubmit, control, formState: { errors } } = useForm<PaymentInfo>({
+        resolver: zodResolver(PaymentInfoSchema)
+    });
     const router = useRouter();
     const theme = useTheme();
+
+    console.log(errors);
 
     const nextPage = () => {
         //submit
@@ -20,28 +29,47 @@ export default function PaymentDetails() {
             <Card style={{ backgroundColor: theme.colors.background }} >
                 <Card.Title title={"Payment details"} titleVariant="titleLarge" />
                 <Card.Content style={{ gap: 10 }}>
-                    <TextInput 
+                    <ControlledInput 
+                        control={control}
+                        name="number"
                         label={"Card number"}
                         placeholder="4242 4242 4242 4242"
-                        style={{ backgroundColor: theme.colors.background }}
                     />
                     <View style={{ flexDirection: 'row', gap: 15 }} >
-                        <TextInput 
+                        <ControlledInput 
+                            control={control}
+                            name="expirationDate"
                             label={"Expiration date"}
                             placeholder="mm/yyyy"
-                            style={{ backgroundColor: theme.colors.background, flex: 3 }}
                         />
-                        <TextInput 
+                        <ControlledInput
+                            control={control}
+                            name="securityCode"
                             label={"Security code"}
-                            style={{ backgroundColor: theme.colors.background, flex: 2 }}
                         />
                     </View>
 
-                    <Checkbox.Item label="Save payment information" status="checked" />
+                    <Controller 
+                        control={control}
+                        name="saveInfo"
+                        render={({ field: { value, onChange }, fieldState: { invalid, error } }) => (
+                            <View>
+                                <HelperText type="error" visible={invalid}>
+                                    {error?.message}
+                                </HelperText>
+                                <Checkbox.Item 
+                                    label="Save payment information" 
+                                    status={value ? 'checked' : 'unchecked'} 
+                                    onPress={() => onChange(!value)}
+                                />
+                            </View>
+                        )}
+                    />
+
                 </Card.Content>
             </Card>
 
-            <Button onPress={nextPage} mode="contained">
+            <Button onPress={handleSubmit(nextPage)} mode="contained">
                 Submit
             </Button>
         </ScrollView>
