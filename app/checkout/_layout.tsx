@@ -1,6 +1,6 @@
 import { Stack } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import CheckoutContextProvider from "../../src/context/checkoutContext"
+import CheckoutContextProvider from "../../src/context/CheckoutContext"
 
 export default function CheckoutStack() {
     return (

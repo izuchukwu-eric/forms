@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonalInfoSchema, PersonalInfo } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
-import { useCheckoutContext } from "../../src/context/checkoutContext";
+import { useCheckoutContext } from "../../src/context/CheckoutContext";
 
 export default function PersonalDetails() {
-    const { handleSubmit, control } = useForm<PersonalInfo>({
+    const { control, handleSubmit } = useForm<PersonalInfo>({
         resolver: zodResolver(PersonalInfoSchema)
     });
     const { setPersonal } = useCheckoutContext();
@@ -41,6 +41,20 @@ export default function PersonalDetails() {
                         name="email"
                         placeholder="hey@gmail.com"
                         label="Email"
+                    />
+
+                    <ControlledInput
+                        control={control}
+                        name="password"
+                        label="Password"
+                        // secureTextEntry
+                    />
+
+                    <ControlledInput
+                        control={control}
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        // secureTextEntry
                     />
                 </Card.Content>
             </Card>

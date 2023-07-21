@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PaymentInfo, PaymentInfoSchema } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
-import { useCheckoutContext } from "../../src/context/checkoutContext";
+import { useCheckoutContext } from "../../src/context/CheckoutContext";
 
 
 export default function PaymentDetails() {

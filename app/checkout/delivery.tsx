@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DeliveryInfoSchema, DeliveryInfo } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
-import { useCheckoutContext } from "../../src/context/checkoutContext";
+import { useCheckoutContext } from "../../src/context/CheckoutContext";
 
 export default function DeliveryDetails() {
     const { handleSubmit, control, formState: { errors } } = useForm<DeliveryInfo>({
