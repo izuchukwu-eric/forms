@@ -1,14 +1,27 @@
-import { ScrollView } from "react-native"
+import { ScrollView, View } from "react-native"
 import { useRouter } from "expo-router"
-import { Button, Card, TextInput, useTheme, RadioButton } from "react-native-paper"
-import { useState } from "react";
+import { Button, Card, useTheme, RadioButton, HelperText } from "react-native-paper"
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DeliveryInfoSchema, DeliveryInfo } from "../../src/schema/checkout.schema";
+import ControlledInput from "../../src/components/ControlledInput";
 
 export default function DeliveryDetails() {
-    const [shipping, setShipping] = useState("free");
+    const { handleSubmit, control, formState: { errors } } = useForm<DeliveryInfo>({
+        resolver: zodResolver(DeliveryInfoSchema),
+        defaultValues: {
+            shipping: "free"
+        }
+
+    });
     const router = useRouter();
     const theme = useTheme();
 
-    const nextPage = () => {
+    console.log(errors);
+
+    const nextPage = (data) => {
+        console.log('Form fields: ', data);
+
         router.push("/checkout/payment")
     }
 
@@ -17,17 +30,20 @@ export default function DeliveryDetails() {
             <Card style={{ backgroundColor: theme.colors.background }} >
                 <Card.Title title={"Delivery address"} titleVariant="titleLarge" />
                 <Card.Content style={{ gap: 10 }}>
-                    <TextInput 
-                        label={"City"}
-                        style={{ backgroundColor: theme.colors.background }}
+                    <ControlledInput 
+                        control={control}
+                        name="city"
+                        label="City"
                     />
-                    <TextInput 
-                        label={"Postal code"}
-                        style={{ backgroundColor: theme.colors.background }}
+                    <ControlledInput 
+                        control={control}
+                        name="postalCode"
+                        label="Postal Code"
                     />
-                    <TextInput 
-                        label={"Address"}
-                        style={{ backgroundColor: theme.colors.background }}
+                    <ControlledInput 
+                        control={control}
+                        name="address"
+                        label="Address"
                     />
                 </Card.Content>
             </Card>
@@ -35,15 +51,27 @@ export default function DeliveryDetails() {
             <Card style={{ backgroundColor: theme.colors.background }} >
                 <Card.Title title={"Shipping options"} titleVariant="titleLarge" />
                 <Card.Content style={{ gap: 10 }}>
-                    <RadioButton.Group value={shipping} onValueChange={(value) => setShipping(value)}>
-                        <RadioButton.Item label="Free" value="free" />
-                        <RadioButton.Item label="Fast" value="fast" />
-                        <RadioButton.Item label="Same day" value="same day" />
-                    </RadioButton.Group>
+                    <Controller 
+                        control={control} 
+                        name="shipping"
+                        render={({ field: { value, onChange }, fieldState: { invalid, error } }) => (
+                            <View>
+                                <HelperText type="error" visible={invalid}>
+                                    {error?.message}
+                                </HelperText>
+                                <RadioButton.Group value={value} onValueChange={(value) => onChange(value)}>
+                                    <RadioButton.Item label="Free" value="free" />
+                                    <RadioButton.Item label="Fast" value="fast" />
+                                    <RadioButton.Item label="Same day" value="same day" />
+                                </RadioButton.Group>
+                            </View>
+
+                        )}
+                    />
                 </Card.Content>
             </Card>
 
-            <Button onPress={nextPage} mode="contained">
+            <Button onPress={handleSubmit(nextPage)} mode="contained">
                 Next
             </Button>
         </ScrollView>

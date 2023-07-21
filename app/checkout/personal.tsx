@@ -1,7 +1,7 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import { Button, Card, HelperText, TextInput, useTheme } from "react-native-paper";
-import { useForm, Controller } from "react-hook-form";
+import { Button, Card, useTheme } from "react-native-paper";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PersonalInfoSchema, PersonalInfo } from "../../src/schema/checkout.schema";
 import ControlledInput from "../../src/components/ControlledInput";
@@ -10,11 +10,10 @@ export default function PersonalDetails() {
     const { handleSubmit, control, formState: { errors } } = useForm<PersonalInfo>({
         resolver: zodResolver(PersonalInfoSchema)
     });
-
-    console.log(errors);
-
     const router = useRouter();
     const theme = useTheme();
+
+    console.log(errors);
 
     const nextPage = (data) => {
         console.log('Form fields: ', data);
